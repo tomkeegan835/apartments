@@ -1,5 +1,6 @@
 import json, boto3
 
+# create s3 client
 s3 = boto3.client('s3')
 
 def smsHandler(event, context):
