@@ -6,7 +6,7 @@ s3 = boto3.client('s3')
 def smsHandler(event, context):
 
     # print event for logging purposes
-    print(event)
+    print(json.dumps(event))
 
     # get url from event
     url = (json.loads(event['Records'][0]['Sns']['Message'])["messageBody"])
