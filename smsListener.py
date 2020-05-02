@@ -12,7 +12,7 @@ def smsHandler(event, context):
     url = (json.loads(event['Records'][0]['Sns']['Message'])["messageBody"])
 
     with open('listingUrls.txt', 'wb') as listingUrlsFile:
-        s3.download_fileobj('com.tom.apartments', 'listingUrls.txt', listingUrlsFile)
+        s3.download_fileobj('com.tom.apartments', '/tmp/listingUrls.txt', listingUrlsFile)
 
     return {
         'statusCode': 200,
