@@ -15,4 +15,4 @@ def write_url(url):
     urls.execute('INSERT INTO urls VALUES ' + url)
 
 if __name__ == '__main__':
-     api.run()
+     api.run(host="0.0.0.0", port=80)
