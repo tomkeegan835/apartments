@@ -12,7 +12,6 @@ listings.execute('''CREATE TABLE IF NOT EXISTS listings (
 
 @api.route('/', methods=['GET'])
 def hello():
-
     return "Hello"
 
 @api.route('/urls/<listingUrl>', methods=['POST'])
@@ -21,9 +20,6 @@ def write_url(listingUrl):
     listings.execute('INSERT INTO listings VALUES ' + listingUrl)
     print('created record with url', file=sys.stdout)
     return 'created record with url'
-
-with api.test_request_context():
-    print(url_for('write_url', listingUrl='http://www.google.com'))
 
 if __name__ == '__main__':
      api.run(host="0.0.0.0", port=80, debug=True)
