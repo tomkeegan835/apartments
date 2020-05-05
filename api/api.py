@@ -16,7 +16,7 @@ def hello():
 
 @api.route('/urls/<listingUrl>', methods=['POST'])
 def write_url(listingUrl):
-    print(listingUrl, file=sys.stdout)
+    print(listingUrl)
     listings.execute('INSERT INTO listings VALUES ' + listingUrl)
     print('created record with url', file=sys.stdout)
     return 'created record with url'
