@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for
+from flask import Flask, request
 import sqlite3, sys
 
 # create the flask api
@@ -16,10 +16,12 @@ def hello():
 
 @api.route('/urls/<listingUrl>', methods=['POST'])
 def write_url(listingUrl):
-    print(listingUrl)
-    listings.execute('INSERT INTO listings VALUES ' + listingUrl)
-    print('created record with url', file=sys.stdout)
-    return 'created record with url'
+    #listings.execute('INSERT INTO listings VALUES ' + listingUrl)
+    #print('created record with url', file=sys.stdout)
+    return 'listingUrl: {}'.format(escape(listingUrl))
 
 if __name__ == '__main__':
      api.run(host="0.0.0.0", port=80, debug=True)
+     
+with app.test_request_context():
+    print(url_for('write_url', username='https://sfbay.craigslist.org/sfc/apa/d/san-francisco-video-tour-penthouse-apt/7112242980.html'))
