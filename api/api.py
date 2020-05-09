@@ -23,7 +23,7 @@ def write_url():
 
     c.execute('INSERT INTO listings VALUES (?)', (listingUrl,))
 
-    print('Inserted', listingUrl, 'into listings database.\n\nThe current contents of the listings database are as follows:\n')
+    print('\nInserted', listingUrl, 'into listings database.\n\nThe current contents of the listings database are as follows:\n\n')
     for row in c.execute('SELECT * FROM listings'):
         print(row, file=sys.stdout)
 
