@@ -9,6 +9,8 @@ listings = sqlite3.connect('listings.db')
 listings.execute('''CREATE TABLE IF NOT EXISTS listings (
                         url text
                     );''')
+listings.commit()
+listings.close()
 
 @api.route('/', methods=['GET'])
 def hello():
