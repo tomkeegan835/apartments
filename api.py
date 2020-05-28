@@ -7,13 +7,13 @@ api = Flask(__name__)
 # create the urls table
 listings = sqlite3.connect('listings.db')
 listings.execute('''CREATE TABLE IF NOT EXISTS listings (
-                        url text
-                        price number
-                        title text
-                        neighborhood text
-                        statsBedrooms number
-                        statsSqft number
-                        postid number
+                        url text,
+                        price number,
+                        title text,
+                        neighborhood text,
+                        statsBedrooms number,
+                        statsSqft number,
+                        postid number,
                         postDatetime text
                     );''')
 listings.commit()
@@ -31,14 +31,14 @@ def write_url():
 
     data = craigslist.scrape(url)
 
-    record = (url, data['price'], data['title'], data['neighborhood'], data['statsBedrooms'], data['statsSqft'], data['postid'], data['postDatetime'])
+    record = (url, data['price'], data['title'], data['neighborhood'], data['stats']['bedrooms'], data['stats']['sqft'], data['postid'], data['postDatetime'])
 
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
-    c.execute('INSERT INTO listings VALUES (?)', record)
+    c.execute('INSERT INTO listings VALUES (?,?,?,?,?,?,?,?)', record)
 
-    print('\nInserted', listingUrl, 'into listings database.\n\nThe current contents of the listings database are as follows:\n\n')
+    print('\nInserted', url, 'into listings database.\n\nThe current contents of the listings database are as follows:\n\n')
     for row in c.execute('SELECT * FROM listings'):
         print(row, file=sys.stdout)
 

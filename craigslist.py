@@ -32,12 +32,12 @@ def get_title(page):
 def get_neighborhood(page):
     return page.find('span', {'class': 'postingtitletext'}).find('small').string.strip(' ()')
 
-def main():
-    r = requests.get('https://sfbay.craigslist.org/sfc/apa/d/san-francisco-beautiful-1-bedroom-and-1/7131533811.html')
+def scrape(url):
+    r = requests.get(url)
 
     page = BeautifulSoup(r.text, 'html.parser')
 
-    data = {
+    return {
         'price': get_price(page),
         'title': get_title(page),
         'neighborhood': get_neighborhood(page),
@@ -46,8 +46,3 @@ def main():
         'postid': get_postid(page),
         'postDatetime': get_postDatetime(page)
     }
-
-    print('DATA:',data)
-
-if __name__=="__main__":
-    main()
