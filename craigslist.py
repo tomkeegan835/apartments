@@ -3,38 +3,66 @@ from bs4 import BeautifulSoup
 
 def get_attributes(page):
     attributes = set()
-    attributes_block = page.find_all('p', {'class': 'attrgroup'})[1]
-    for attribute in attributes_block.find_all('span'):
-        attributes.add(attribute.string)
+    attributesGroups = page.find_all('p', {'class': 'attrgroup'})
+    if len(attributesGroups) > 1:
+        for attribute in attributesGroups[1].find_all('span'):
+            attributes.add(attribute.string)
     return attributes
 
 def get_postDatetime(page):
-    return page.find('div', {'class': 'postinginfos'}).find('p', {'class': 'postinginfo reveal'}).time['datetime']
+    postDatetime = ''
+    postingInfoTag = page.find('div', {'class': 'postinginfos'})
+    if postingInfoTag != None:
+        postDatetimeWrapper = postingInfoTag.find('p', {'class': 'postinginfo reveal'})
+        if postDatetimeWrapper != None:
+            postDatetimeTag = postDatetimeWrapper.time
+            if postDatetimeTag != None:
+                postDatetime = postDatetimeTag['datetime']
+    return postDatetime
 
 def get_postid(page):
-    return int(page.find('div', {'class': 'postinginfos'}).find('p').string[9:])
+    postid = 0
+    postingInfoTag = page.find('div', {'class': 'postinginfos'})
+    if postingInfoTag != None:
+        postidTag = postingInfoTag.p
+        if postidTag != None:
+            postid = int(postidTag.string[9:])
+    return postid
 
 def get_price(page):
-    return int(page.find('span', {'class': 'price'}).string[1:])
+    price = 0
+    priceTag = page.find('span', {'class': 'price'})
+    if priceTag != None:
+        price = int(priceTag.string[1:])
+    return price
 
 def get_stats(page):
     statsKeys = ['bedrooms', 'sqft']
     statsValues = []
 
     for bubble in page.find_all('span', {'class': 'shared-line-bubble'}):
-        if bubble.find('b') != None: statsValues.append(int(bubble.find('b').string.strip(string.ascii_letters)))
+        if bubble.b != None: statsValues.append(int(bubble.b.string.strip(string.ascii_letters)))
 
     return dict(zip(statsKeys, statsValues))
 
 def get_title(page):
-    return page.find('span', {'id': 'titletextonly'}).string
+    title = ''
+    titleTag = page.find('span', {'id': 'titletextonly'})
+    if titleTag != None:
+        title = titleTag.string
+    return title
 
 def get_neighborhood(page):
-    return page.find('span', {'class': 'postingtitletext'}).find('small').string.strip(' ()')
+    neighborhood = ''
+    titleTag = page.find('span', {'class': 'postingtitletext'})
+    if titleTag != None:
+        neighborhoodTag = titleTag.small
+        if neighborhoodTag != None:
+            neighborhood = neighborhoodTag.string.strip(' ()')
+    return neighborhood
 
 def scrape(url):
     r = requests.get(url)
-
     page = BeautifulSoup(r.text, 'html.parser')
 
     return {

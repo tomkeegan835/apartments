@@ -1,23 +1,13 @@
-import sqlite3, sys, json, craigslist
+import json
 from flask import Flask, request
+# custom
+import craigslist, sql, util
 
 # create the flask api
 api = Flask(__name__)
 
 # create the urls table
-listings = sqlite3.connect('listings.db')
-listings.execute('''CREATE TABLE IF NOT EXISTS listings (
-                        url text,
-                        price number,
-                        title text,
-                        neighborhood text,
-                        statsBedrooms number,
-                        statsSqft number,
-                        postid number,
-                        postDatetime text
-                    );''')
-listings.commit()
-listings.close()
+sql.create_table()
 
 @api.route('/', methods=['GET'])
 def hello():
@@ -31,19 +21,7 @@ def write_url():
 
     data = craigslist.scrape(url)
 
-    record = (url, data['price'], data['title'], data['neighborhood'], data['stats']['bedrooms'], data['stats']['sqft'], data['postid'], data['postDatetime'])
-
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
-
-    c.execute('INSERT INTO listings VALUES (?,?,?,?,?,?,?,?)', record)
-
-    print('\nInserted', url, 'into listings database.\n\nThe current contents of the listings database are as follows:\n\n')
-    for row in c.execute('SELECT * FROM listings'):
-        print(row, file=sys.stdout)
-
-    listings.commit()
-    listings.close()
+    sql.insert_record(tuplify(data))
 
     return "processed SMS with listing link"
 
