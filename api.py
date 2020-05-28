@@ -1,5 +1,5 @@
+import sqlite3, sys, json, craigslist
 from flask import Flask, request
-import sqlite3, sys, json
 
 # create the flask api
 api = Flask(__name__)
@@ -8,6 +8,13 @@ api = Flask(__name__)
 listings = sqlite3.connect('listings.db')
 listings.execute('''CREATE TABLE IF NOT EXISTS listings (
                         url text
+                        price number
+                        title text
+                        neighborhood text
+                        statsBedrooms number
+                        statsSqft number
+                        postid number
+                        postDatetime text
                     );''')
 listings.commit()
 listings.close()
@@ -18,12 +25,18 @@ def hello():
 
 @api.route('/urls/', methods=['POST'])
 def write_url():
-    listingUrl = json.loads(json.loads(request.data)['Message'])["messageBody"]
+    print(json.loads(request.data))
+
+    url = json.loads(json.loads(request.data)['Message'])["messageBody"]
+
+    data = craigslist.scrape(url)
+
+    record = (url, data['price'], data['title'], data['neighborhood'], data['statsBedrooms'], data['statsSqft'], data['postid'], data['postDatetime'])
 
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
-    c.execute('INSERT INTO listings VALUES (?)', (listingUrl,))
+    c.execute('INSERT INTO listings VALUES (?)', record)
 
     print('\nInserted', listingUrl, 'into listings database.\n\nThe current contents of the listings database are as follows:\n\n')
     for row in c.execute('SELECT * FROM listings'):
