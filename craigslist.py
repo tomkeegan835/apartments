@@ -1,13 +1,7 @@
 import requests, string, dateutil.parser
 from bs4 import BeautifulSoup
-
-def get_attributes(page):
-    attributes = set()
-    attributesGroups = page.find_all('p', {'class': 'attrgroup'})
-    if len(attributesGroups) > 1:
-        for attribute in attributesGroups[1].find_all('span'):
-            attributes.add(attribute.string)
-    return attributes
+# custom
+import util
 
 def get_postDatetime(page):
     postDatetime = ''
@@ -36,14 +30,39 @@ def get_price(page):
         price = int(priceTag.string[1:])
     return price
 
-def get_stats(page):
-    statsKeys = ['bedrooms', 'sqft']
-    statsValues = []
+def get_attributes(page):
+    bedrooms = 0
+    bathrooms = 0
+    sqft = 0
+    availDate = ''
+    tags = set()
 
-    for bubble in page.find_all('span', {'class': 'shared-line-bubble'}):
-        if bubble.b != None: statsValues.append(int(bubble.b.string.strip(string.ascii_letters)))
+    attrGroups = page.find_all('p', {'class': 'attrgroup'})
 
-    return dict(zip(statsKeys, statsValues))
+    for attrGroup in attrGroups:
+        if attrGroup != None:
+            sharedLineBubbles = attrGroup.find_all('span', {'class': 'shared-line-bubble'})
+            if len(sharedLineBubbles) > 0:
+                for sharedLineBubble in sharedLineBubbles:
+                    if sharedLineBubble != None:
+                        bees = sharedLineBubble.find_all('b')
+                        if len(bees) == 2:
+                            bedrooms = bees[0].string.strip('BR')
+                            bathrooms = bees[1].string.strip('Ba')
+                        elif len(bees) == 1:
+                            sqft = int(bees[0].string)
+                        else:
+                            availDate = sharedLineBubble['data-date']
+            else:
+                for tag in attrGroup.find_all('span'):
+                    tags.add(tag)
+    return {
+        'bedrooms': bedrooms,
+        'bathrooms': bathrooms,
+        'sqft': sqft,
+        'availDate': availDate,
+        'tags': tags
+    }
 
 def get_title(page):
     title = ''
@@ -63,13 +82,14 @@ def get_neighborhood(page):
 
 def scrape(url):
     r = requests.get(url)
+    util.pause()
     page = BeautifulSoup(r.text, 'html.parser')
 
     return {
+        'url': url,
         'price': get_price(page),
         'title': get_title(page),
         'neighborhood': get_neighborhood(page),
-        'stats': get_stats(page),
         'attributes': get_attributes(page),
         'postid': get_postid(page),
         'postDatetime': get_postDatetime(page)

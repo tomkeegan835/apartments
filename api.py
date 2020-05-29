@@ -15,13 +15,11 @@ def hello():
 
 @api.route('/urls/', methods=['POST'])
 def write_url():
-    print(json.loads(request.data))
-
     url = json.loads(json.loads(request.data)['Message'])["messageBody"]
 
     data = craigslist.scrape(url)
 
-    sql.insert_record(tuplify(data))
+    sql.insert_record(util.tuplify(data))
 
     return "processed SMS with listing link"
 
