@@ -12,7 +12,7 @@ def crawl(url, numRemaining):
     page = BeautifulSoup(r.text, 'html.parser')
 
     for result in page.find_all('p', {'class': 'result-info'}):
-        if numRemaining == 0: return
+        if numRemaining == 0: return 0
         listingUrl = result.a['href']
         listingUrls.add(listingUrl)
         numRemaining = numRemaining - 1
@@ -29,8 +29,7 @@ def crawl(url, numRemaining):
     return numRemaining
 
 firstUrl = sys.argv[1]
-numListingsRequested = int(sys.argv[2])
-numListings = numListingsRequested
+numListings = numListingsRequested = int(sys.argv[2])
 baseUrl = 'https://sfbay.craigslist.org'
 pageUrls = {firstUrl}
 listingUrls = set()
@@ -41,17 +40,10 @@ fetchSpinner = Spinner('Fetching lising URLs ')
 numListings = numListingsRequested - crawl(firstUrl, numListingsRequested)
 fetchSpinner.finish()
 
-scrapeBar = ChargingBar('Scraping listings', max = numListings, suffix = '%(index)d/%(max)d')
+sql.create_table()
+scrapeBar = ChargingBar('Scraping listings and storing in sqlite', max = numListings, suffix = '%(index)d/%(max)d')
 for listingUrl in listingUrls:
     listingInfo = craigslist.scrape(listingUrl)
-    listings.append(listingInfo)
+    sql.insert_record(util.tuplify(listingInfo))
     scrapeBar.next()
 scrapeBar.finish()
-
-sql.create_table()
-
-sqlBar = ChargingBar('Writing listings to database', max = numListings, suffix = '%(index)d/%(max)d')
-for listing in listings:
-    sql.insert_record(util.tuplify(listing))
-    sqlBar.next()
-sqlBar.finish()

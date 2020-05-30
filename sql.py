@@ -10,7 +10,7 @@ def create_table():
                             bedrooms number DEFAULT 0,
                             bathrooms number DEFAULT 0,
                             sqft number DEFAULT 0,
-                            availDate text DEFUALT unknown,
+                            availDate text DEFAULT unknown,
                             postid number,
                             postDatetime text
                         );''')
