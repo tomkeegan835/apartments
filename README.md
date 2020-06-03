@@ -2,24 +2,23 @@
 searching for apartments
 
 api.py: basic Flask api for sqlite3 database\
+crawl.py: pulls in craigslist listing URLs\
 craiglist.py: craiglist scraper which returns a dictionary with the following structure:
 ```
 {
-    'price': 4100, 
-    'title': 'Beautiful 1 Bedroom and 1 Bath Unit in Meticulously Restored Victorian',
-    'neighborhood': 'alamo square / nopa',
-    'stats': {
-        'bedrooms': 1,
-        'sqft': 684
-    }, 
+    'url': string url
+    'price': int price,
+    'title': string title,
+    'neighborhood': string neighborhood,
     'attributes': {
-        'apartment',
-        'laundry on site',
-        'street parking',
-        'no smoking'
+        'bedrooms': int,
+        'bathrooms': int,
+        'sqft': int,
+        'availDate' : string,
+        'tags': set
     },
-    'postid': 7131533811,
-    'postDatetime': '2020-05-27T17:32:21-0700'
+    'postid': int,
+    'postDatetime': iso string
 }
 ```
-delpoy.sh: sftps neccessary files to ec2
+deploy.sh: packages and sftps files to ec2
