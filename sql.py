@@ -1,27 +1,33 @@
 import sqlite3
 
-def create_table():
+def create_table(tablename):
     listings = sqlite3.connect('listings.db')
-    listings.execute('''CREATE TABLE IF NOT EXISTS listings (
+    listings.execute('''CREATE TABLE IF NOT EXISTS {table} (
                             url text PRIMARY KEY UNIQUE,
-                            price number,
-                            title text,
-                            neighborhood text,
+                            apartment text,
+                            title text DEFAULT unknown,
+                            neighborhood text DEFAULT unknown,
+                            price number DEFAULT 0,
+                            availDate text DEFAULT unknown,
                             bedrooms number DEFAULT 0,
                             bathrooms number DEFAULT 0,
                             sqft number DEFAULT 0,
-                            availDate text DEFAULT unknown,
-                            postid number,
-                            postDatetime text
-                        );''')
+                            parking text,
+                            laundry text,
+                            cats text,
+                            dogs text,
+                            furnished text,
+                            postDatetime text DEFAULT unknown,
+                            postid number DEFAULT 0
+                        );'''.format(table = tablename))
     listings.commit()
     listings.close()
 
-def insert_record(record):
+def insert_listing(record):
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
-    c.execute('INSERT OR IGNORE INTO listings VALUES (?,?,?,?,?,?,?,?,?,?)', record)
+    c.execute('INSERT OR IGNORE INTO listings VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', record)
 
     listings.commit()
     listings.close()

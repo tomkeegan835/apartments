@@ -40,10 +40,10 @@ fetchSpinner = Spinner('Fetching lising URLs ')
 numListings = numListingsRequested - crawl(firstUrl, numListingsRequested)
 fetchSpinner.finish()
 
-sql.create_table()
+sql.create_table('listings')
 scrapeBar = ChargingBar('Scraping listings and storing in sqlite', max = numListings, suffix = '%(index)d/%(max)d')
 for listingUrl in listingUrls:
     listingInfo = craigslist.scrape(listingUrl)
-    sql.insert_record(util.tuplify(listingInfo))
+    sql.insert_listing(util.tuplify_listing(listingInfo))
     scrapeBar.next()
 scrapeBar.finish()
