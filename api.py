@@ -7,7 +7,7 @@ import craigslist, sql, util
 api = Flask(__name__)
 
 # create the urls table
-sql.create_table()
+sql.create_table('listingsSMS')
 
 @api.route('/', methods=['GET'])
 def hello():
@@ -19,7 +19,7 @@ def write_url():
 
     data = craigslist.scrape(url)
 
-    sql.insert_record(util.tuplify(data))
+    sql.insert('listingsSMS', util.tuplify_listing(data))
 
     return "processed SMS with listing link"
 

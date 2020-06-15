@@ -23,7 +23,7 @@ def create_table(tablename):
     listings.commit()
     listings.close()
 
-def insert_listing(record):
+def insert(tablename, record):
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
@@ -32,13 +32,26 @@ def insert_listing(record):
     listings.commit()
     listings.close()
 
-def dump_listings(filename):
+def column(tablename, columnheader):
+    listings = sqlite3.connect('listings.db')
+    c = listings.cursor()
+
+    column = set()
+
+    for row in c.execute('SELECT {col} FROM {table}'.format(col = columnheader, table = tablename)):
+        column.add(row)
+
+    listings.close()
+
+    return column
+
+def dump(tablename, filename):
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
     file = open(filename, 'w')
 
-    for row in c.execute('SELECT * FROM listings'):
+    for row in c.execute('SELECT * FROM {table}'.format(table = tablename)):
         file.write('|'.join([str(e) for e in row]) + '\n')
 
     file.close()
