@@ -1,5 +1,18 @@
 import sqlite3
 
+def column(tablename, columnheader):
+    listings = sqlite3.connect('listings.db')
+    c = listings.cursor()
+
+    column = set()
+
+    for row in c.execute('SELECT {col} FROM {table}'.format(col = columnheader, table = tablename)):
+        column.add(row)
+
+    listings.close()
+
+    return column
+
 def create_table(tablename):
     listings = sqlite3.connect('listings.db')
     listings.execute('''CREATE TABLE IF NOT EXISTS {table} (
@@ -23,27 +36,14 @@ def create_table(tablename):
     listings.commit()
     listings.close()
 
-def insert(tablename, record):
+def drop(tablename):
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
-    c.execute('INSERT OR IGNORE INTO listings VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', record)
+    c.execute('DROP TABLE {table}'.format(table = tablename))
 
     listings.commit()
     listings.close()
-
-def column(tablename, columnheader):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
-
-    column = set()
-
-    for row in c.execute('SELECT {col} FROM {table}'.format(col = columnheader, table = tablename)):
-        column.add(row)
-
-    listings.close()
-
-    return column
 
 def dump(tablename, filename):
     listings = sqlite3.connect('listings.db')
@@ -56,4 +56,13 @@ def dump(tablename, filename):
 
     file.close()
 
+    listings.close()
+
+def insert(tablename, record):
+    listings = sqlite3.connect('listings.db')
+    c = listings.cursor()
+
+    c.execute('INSERT OR IGNORE INTO listings VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', record)
+
+    listings.commit()
     listings.close()
