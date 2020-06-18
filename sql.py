@@ -62,7 +62,7 @@ def insert(tablename, record):
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
-    c.execute('INSERT OR IGNORE INTO listings VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', record)
+    c.execute('INSERT OR IGNORE INTO {table} VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'.format(table = tablename), record)
 
     listings.commit()
     listings.close()

@@ -48,7 +48,6 @@ def scrape_set(urls, tablename):
         sql.insert(tablename, util.tuplify_listing(info))
         scrapeBar.next()
     scrapeBar.finish()
-    return
 
 """
 ____CRAWL____

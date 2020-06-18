@@ -1,5 +1,8 @@
 import time, random, sys
 
+def pause():
+    time.sleep(.5 + 2.5 * random.random())
+
 def tuplify_listing(data):
     tags = data['attributes']['tags']
 
@@ -42,6 +45,3 @@ def tuplify_listing(data):
         data['postDatetime'],
         data['postid']
     )
-
-def pause():
-    time.sleep(.5 + 2.5 * random.random())

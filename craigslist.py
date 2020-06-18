@@ -3,6 +3,13 @@ from bs4 import BeautifulSoup
 # custom
 import util
 
+def check_alive(url):
+    r = requests.get(url)
+    util.pause()
+    page = BeautifulSoup(r.text, 'html.parser')
+
+    return get_postid(page) != 0
+
 def get_postDatetime(page):
     postDatetime = ''
     postingInfoTag = page.find('div', {'class': 'postinginfos'})
@@ -55,7 +62,7 @@ def get_attributes(page):
                             availDate = sharedLineBubble['data-date']
             else:
                 for tag in attrGroup.find_all('span'):
-                    tags.add(tag)
+                    tags.add(tag.string)
     return {
         'bedrooms': bedrooms,
         'bathrooms': bathrooms,
