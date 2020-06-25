@@ -3,15 +3,14 @@ import pandas as pd
 
 # rewrite this
 def column(tablename, columnheader):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
 
     column = set()
-
     for row in c.execute('SELECT {col} FROM {table}'.format(col = columnheader, table = tablename)):
         column.add(row)
 
-    listings.close()
+    db.close()
 
     return column
 
@@ -69,13 +68,13 @@ def drop(tablename):
     listings.close()
 
 def delete(tablename, columnheader, value):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
 
     c.execute('DELETE FROM {table} WHERE {column} = \'{val}\''.format(table = tablename, column = columnheader, val = value))
 
-    listings.commit()
-    listings.close()
+    db.commit()
+    db.close()
 
 def dump(tablename, filename):
     listings = sqlite3.connect('listings.db')
@@ -91,14 +90,14 @@ def dump(tablename, filename):
     listings.close()
 
 def oldest(tablename):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
 
     urls = []
     for row in c.execute('SELECT * FROM {table} ORDER BY postDatetime ASC'.format(table = tablename)):
         urls.append(row[0])
 
-    listings.close()
+    db.close()
 
     return urls
 
@@ -106,7 +105,7 @@ def select(tablename, columnheader, value):
     listings = sqlite3.connect('listings.db')
     c = listings.cursor()
 
-    rows = c.execute('SELECT * FROM {table} WHERE {column} = \'{val}\''.format(table = tablename, column = columnheader, val = value))
+    rows = c.execute('SELECT * FROM {table} WHERE {column} = ?'.format(table = tablename, column = columnheader), value,)
 
     listings.close()
 
