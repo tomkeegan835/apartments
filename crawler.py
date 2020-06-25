@@ -1,33 +1,9 @@
 import requests, sys, time
 from bs4 import BeautifulSoup
 from progress.spinner import Spinner
+from progress.bar import ChargingBar
 # custom
 import craigslist, sql, util
-
-# recursive function to fetch all listing urls
-def next(baseUrl, url, numRemaining, progress):
-    pageUrls = set()
-    nextUrl = ''
-
-    r = requests.get(url)
-    progress.next()
-    util.pause()
-    page = BeautifulSoup(r.text, 'html.parser')
-
-    for result in page.find_all('p', {'class': 'result-info'}):
-        if numRemaining == 0: return pageUrls
-        pageUrl = result.a['href']
-        pageUrls.add(pageUrl)
-        numRemaining = numRemaining - 1
-
-    nextRelUrlTag = page.find('a', {'class': 'button next'})
-    if nextRelUrlTag != None:
-        nextRelUrl = nextRelUrlTag['href']
-        if len(nextRelUrl) > 0:
-            nextUrl = baseUrl + nextRelUrl
-            pageUrls.update(next(baseUrl, nextUrl, numRemaining, progress))
-
-    return pageUrls
 
 """
 ____CLEAN____
@@ -64,3 +40,28 @@ def crawl(firstUrl, numListingsRequested):
 
     spinner.finish()
     return listingUrls
+
+# recursive function to fetch all listing urls
+def next(baseUrl, url, numRemaining, progress):
+    pageUrls = set()
+    nextUrl = ''
+
+    r = requests.get(url)
+    progress.next()
+    util.pause()
+    page = BeautifulSoup(r.text, 'html.parser')
+
+    for result in page.find_all('p', {'class': 'result-info'}):
+        if numRemaining == 0: return pageUrls
+        pageUrl = result.a['href']
+        pageUrls.add(pageUrl)
+        numRemaining = numRemaining - 1
+
+    nextRelUrlTag = page.find('a', {'class': 'button next'})
+    if nextRelUrlTag != None:
+        nextRelUrl = nextRelUrlTag['href']
+        if len(nextRelUrl) > 0:
+            nextUrl = baseUrl + nextRelUrl
+            pageUrls.update(next(baseUrl, nextUrl, numRemaining, progress))
+
+    return pageUrls

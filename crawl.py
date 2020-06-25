@@ -10,6 +10,6 @@ while(True):
     newUrls = fetchedUrls - currentUrls
 
     if(len(newUrls) > 0):
-        craiglist.scrape_set(newUrls, 'listings')
+        craigslist.scrape_set(newUrls, 'listings')
 
     crawler.clean('listings')
