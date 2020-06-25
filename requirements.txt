@@ -2,3 +2,4 @@ bs4
 flask
 progress
 requests
+pandas

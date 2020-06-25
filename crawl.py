@@ -1,13 +1,3 @@
-import crawler, sql
+import crawler, craigslist
 
-while(True):
-    fetchedUrls = crawler.crawl('https://sfbay.craigslist.org/search/sfc/apa?', 3000)
-
-    currentUrls = set()
-    for row in sql.column('listings', 'url'):
-        currentUrls.add(row[0])
-
-    newUrls = fetchedUrls - currentUrls
-
-    if(len(newUrls) > 0):
-        crawler.scrape_set(newUrls, 'listings')
+craigslist.scrape_set(crawler.crawl('https://sfbay.craigslist.org/search/sfc/apa?', 200), 'listings')

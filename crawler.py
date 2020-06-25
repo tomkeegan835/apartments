@@ -1,6 +1,5 @@
 import requests, sys, time
 from bs4 import BeautifulSoup
-from progress.bar import ChargingBar
 from progress.spinner import Spinner
 # custom
 import craigslist, sql, util
@@ -31,23 +30,21 @@ def next(baseUrl, url, numRemaining, progress):
     return pageUrls
 
 """
-____SCRAPE_SET____
+____CLEAN____
 
 RETURN: None
 
-ARGS:
-    urls: set of craiglist apartment posting URLs
-    tablename: SQL table in which results will be stored
+ARGS: tablename: name of table to be cleaned
 """
-def scrape_set(urls, tablename):
-    sql.create_table(tablename)
-    results = set()
-    scrapeBar = ChargingBar('Scraping urls', max = len(urls), suffix = '%(index)d/%(max)d')
+def clean(tablename):
+    urls = sql.oldest(tablename)
+
+    checkBar = ChargingBar('Checking for expired listings', max = len(urls), suffix = '%(index)d/%(max)d')
     for url in urls:
-        info = craigslist.scrape(url)
-        sql.insert(tablename, util.tuplify_listing(info))
-        scrapeBar.next()
-    scrapeBar.finish()
+        if craigslist.is_expired(url):
+            sql.delete(tablename, 'url', url)
+        checkBar.next()
+    checkBar.finish()
 
 """
 ____CRAWL____

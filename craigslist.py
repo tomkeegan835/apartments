@@ -1,14 +1,15 @@
 import requests, string, dateutil.parser
 from bs4 import BeautifulSoup
-# custom
-import util
+from progress.bar import ChargingBar
+# local
+import util, sql
 
-def check_alive(url):
+def is_expired(url):
     r = requests.get(url)
     util.pause()
     page = BeautifulSoup(r.text, 'html.parser')
 
-    return get_postid(page) != 0
+    return get_postid(page) == 0
 
 def get_postDatetime(page):
     postDatetime = ''
@@ -87,6 +88,16 @@ def get_neighborhood(page):
             neighborhood = neighborhoodTag.string.strip(' ()')
     return neighborhood
 
+"""
+____SCRAPE____
+
+RETURN: tuple containing database record
+
+ARGS:
+    urls: set of craiglist apartment posting URLs
+    tablename: SQL table in which results will be stored
+"""
+
 def scrape(url):
     r = requests.get(url)
     util.pause()
@@ -101,3 +112,65 @@ def scrape(url):
         'postid': get_postid(page),
         'postDatetime': get_postDatetime(page)
     }
+
+"""
+____SCRAPE_SET____
+
+RETURN: None
+
+ARGS:
+    urls: set of craiglist apartment posting URLs
+    tablename: SQL table in which results will be stored
+"""
+def scrape_set(urls, tablename):
+    sql.craigslist_create(tablename)
+    results = set()
+    scrapeBar = ChargingBar('Scraping urls', max = len(urls), suffix = '%(index)d/%(max)d')
+    for url in urls:
+        info = scrape(url)
+        sql.craigslist_insert(tablename, tuplify(info))
+        scrapeBar.next()
+    scrapeBar.finish()
+
+def tuplify(data):
+    tags = data['attributes']['tags']
+
+    cats = 'yes' if 'cats are OK - purrr' in tags else 'no'
+    dogs = 'yes' if 'dogs are OK - wooof' in tags else 'no'
+    furnished = 'yes' if 'furnished' in tags else 'no'
+    apartment = 'yes' if 'apartment' in tags else 'no'
+
+    laundryInBuilding = 'laundry in bldg' in tags
+    laundryInUnit = 'w/d in unit' in tags
+
+    laundry = ''
+    if(laundryInBuilding): laundry = 'laundry in bldg'
+    elif(laundryInUnit): laundry = 'w/d in unit'
+    else: laundry = 'no laundry'
+
+    offStreetParking = 'off-street parking' in tags
+    garage = 'attached garage' in tags
+
+    parking = ''
+    if(offStreetParking): parking = 'off-street parking'
+    elif(garage): parking = 'attached garage'
+    else: parking = 'no parking'
+
+    return (
+        data['url'],
+        apartment,
+        data['title'],
+        data['neighborhood'],
+        data['price'],
+        data['attributes']['availDate'],
+        data['attributes']['bedrooms'],
+        data['attributes']['bathrooms'],
+        data['attributes']['sqft'],
+        parking,
+        laundry,
+        cats,
+        dogs,
+        furnished,
+        data['postDatetime'],
+        data['postid']
+    )
