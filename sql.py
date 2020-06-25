@@ -1,5 +1,4 @@
 import sqlite3
-import pandas as pd
 
 # rewrite this
 def column(tablename, columnheader):
