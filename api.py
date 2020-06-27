@@ -20,7 +20,7 @@ def write_url():
 
     data = craigslist.scrape(url)
 
-    sql.craigslist_insert('listingsSMS', craiglist.tuplify(data))
+    sql.craigslist_insert('listingsSMS', craigslist.tuplify(data))
 
     return "processed SMS with listing link"
 
