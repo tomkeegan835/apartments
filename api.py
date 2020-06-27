@@ -7,7 +7,7 @@ import craigslist, sql, util
 api = Flask(__name__)
 
 # create the urls table
-sql.craigslist_create('listingsSMS')
+sql.craigslist_create('listingsApi')
 
 @api.route('/', methods=['GET'])
 def hello():
