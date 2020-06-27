@@ -7,19 +7,20 @@ import craigslist, sql, util
 api = Flask(__name__)
 
 # create the urls table
-sql.create_table('listingsSMS')
+sql.craigslist_create('listingsSMS')
 
 @api.route('/', methods=['GET'])
 def hello():
-    return "Hello"
+    return "What are you doing here?"
 
 @api.route('/urls/', methods=['POST'])
 def write_url():
+    # is there a better way to do this than nested json.loads()?
     url = json.loads(json.loads(request.data)['Message'])["messageBody"]
 
     data = craigslist.scrape(url)
 
-    sql.insert('listingsSMS', util.tuplify_listing(data))
+    sql.craigslist_insert('listingsSMS', craiglist.tuplify(data))
 
     return "processed SMS with listing link"
 
