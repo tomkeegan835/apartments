@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 # rewrite this
 def column(tablename, columnheader):
@@ -57,14 +58,23 @@ def copy_table(original, copy):
     db.commit()
     db.close()
 
+def to_df(tablename):
+    db = sqlite3.connect('db.db')
+
+    df = pd.read_sql_query('SELECT * from {table}'.format(table = tablename), db)
+
+    db.close()
+
+    return df
+
 def drop(tablename):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
 
     c.execute('DROP TABLE {table}'.format(table = tablename))
 
-    listings.commit()
-    listings.close()
+    db.commit()
+    db.close()
 
 def delete(tablename, columnheader, value):
     db = sqlite3.connect('db.db')
@@ -76,17 +86,13 @@ def delete(tablename, columnheader, value):
     db.close()
 
 def dump(tablename, filename):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
 
-    file = open(filename, 'w')
+    df = pd.read_sql_query('SELECT * FROM {table}'.format(table = tablename), db)
 
-    for row in c.execute('SELECT * FROM {table}'.format(table = tablename)):
-        file.write('|'.join([str(e) for e in row]) + '\n')
+    db.close()
 
-    file.close()
-
-    listings.close()
+    df.to_csv('{file}.csv'.format(file = filename), index = False)
 
 def oldest(tablename):
     db = sqlite3.connect('db.db')
@@ -101,11 +107,11 @@ def oldest(tablename):
     return urls
 
 def select(tablename, columnheader, value):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
 
     rows = c.execute('SELECT * FROM {table} WHERE {column} = ?'.format(table = tablename, column = columnheader), value,)
 
-    listings.close()
+    db.close()
 
     return rows
