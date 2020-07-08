@@ -14,4 +14,4 @@ while(True):
     if(len(newUrls) > 0):
         craigslist.scrape_set(newUrls, 'listingsCrawlMilwaukee')
 
-    crawler.clean('listingsCrawlMilwaukee')mi
+    crawler.clean('listingsCrawlMilwaukee')
