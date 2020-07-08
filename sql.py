@@ -14,6 +14,17 @@ def column(tablename, columnheader):
 
     return column
 
+def copy_table(original, copy):
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
+
+    craigslist_create(copy)
+    sql_args = (copy, original)
+    c.execute('INSERT INTO ? SELECT * FROM ?', sql_args)
+
+    db.commit()
+    db.close()
+
 def craigslist_create(tablename):
     db = sqlite3.connect('db.db')
     db.execute('''CREATE TABLE IF NOT EXISTS {table} (
@@ -43,17 +54,6 @@ def craigslist_insert(tablename, record):
     c = db.cursor()
 
     c.execute('INSERT OR IGNORE INTO {table} VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'.format(table = tablename), record)
-
-    db.commit()
-    db.close()
-
-def copy_table(original, copy):
-    db = sqlite3.connect('db.db')
-    c = db.cursor()
-
-    create_table(copy)
-    sql_args = (copy, original)
-    c.execute('INSERT INTO ? SELECT * FROM ?', sql_args)
 
     db.commit()
     db.close()
