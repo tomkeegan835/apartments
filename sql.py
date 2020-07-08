@@ -20,7 +20,7 @@ def copy_table(original, copy):
 
     craigslist_create(copy)
     sql_args = (copy, original)
-    c.execute('INSERT INTO ? SELECT * FROM ?', sql_args)
+    c.execute('INSERT INTO {newTable} SELECT * FROM {oldTable}'.format(newTable = copy, oldTable = original))
 
     db.commit()
     db.close()
