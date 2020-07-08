@@ -1,4 +1,4 @@
-import requests, string, dateutil.parser
+import requests, string
 from bs4 import BeautifulSoup
 from progress.bar import ChargingBar
 # local
