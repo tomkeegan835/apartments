@@ -1,4 +1,4 @@
 bs4
-flask
+pandas
 progress
 requests

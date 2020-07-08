@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 # rewrite this
 def column(tablename, columnheader):
@@ -12,6 +13,17 @@ def column(tablename, columnheader):
     db.close()
 
     return column
+
+def copy_table(original, copy):
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
+
+    craigslist_create(copy)
+    sql_args = (copy, original)
+    c.execute('INSERT INTO ? SELECT * FROM ?', sql_args)
+
+    db.commit()
+    db.close()
 
 def craigslist_create(tablename):
     db = sqlite3.connect('db.db')
@@ -46,25 +58,23 @@ def craigslist_insert(tablename, record):
     db.commit()
     db.close()
 
-def copy_table(original, copy):
+def to_df(tablename):
+    db = sqlite3.connect('db.db')
+
+    df = pd.read_sql_query('SELECT * from {table}'.format(table = tablename), db)
+
+    db.close()
+
+    return df
+
+def drop(tablename):
     db = sqlite3.connect('db.db')
     c = db.cursor()
 
-    create_table(copy)
-    sql_args = (copy, original)
-    c.execute('INSERT INTO ? SELECT * FROM ?', sql_args)
+    c.execute('DROP TABLE {table}'.format(table = tablename))
 
     db.commit()
     db.close()
-
-def drop(tablename):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
-
-    c.execute('DROP TABLE {table}'.format(table = tablename))
-
-    listings.commit()
-    listings.close()
 
 def delete(tablename, columnheader, value):
     db = sqlite3.connect('db.db')
@@ -76,17 +86,13 @@ def delete(tablename, columnheader, value):
     db.close()
 
 def dump(tablename, filename):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
 
-    file = open(filename, 'w')
+    df = pd.read_sql_query('SELECT * FROM {table}'.format(table = tablename), db)
 
-    for row in c.execute('SELECT * FROM {table}'.format(table = tablename)):
-        file.write('|'.join([str(e) for e in row]) + '\n')
+    db.close()
 
-    file.close()
-
-    listings.close()
+    df.to_csv('{file}.csv'.format(file = filename), index = False)
 
 def oldest(tablename):
     db = sqlite3.connect('db.db')
@@ -101,11 +107,11 @@ def oldest(tablename):
     return urls
 
 def select(tablename, columnheader, value):
-    listings = sqlite3.connect('listings.db')
-    c = listings.cursor()
+    db = sqlite3.connect('db.db')
+    c = db.cursor()
 
     rows = c.execute('SELECT * FROM {table} WHERE {column} = ?'.format(table = tablename, column = columnheader), value,)
 
-    listings.close()
+    db.close()
 
     return rows
