@@ -1,7 +1,7 @@
 import craigslist, crawler, sql
 
 while(True):
-    fetchedUrls = crawler.crawl('https://milwaukee.craigslist.org/search/apa?', 3000)
+    fetchedUrls = crawler.crawl('https://milwaukee.craigslist.org', 'https://milwaukee.craigslist.org/search/apa?', 3000)
 
     sql.craigslist_create('listingsCrawlMilwaukee')
 
