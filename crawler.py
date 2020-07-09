@@ -31,8 +31,7 @@ ARGS:
     firstUrl: url from which to start crawling
     numListingsRequested: how many results to fetch
 """
-def crawl(firstUrl, numListingsRequested):
-    baseUrl = 'https://sfbay.craigslist.org'
+def crawl(baseUrl, firstUrl, numListingsRequested):
     spinner = Spinner('Fetching listing URLs ')
 
     # crawl all urls, starting with the first search result page
