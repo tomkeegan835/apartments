@@ -16,8 +16,12 @@ def hello():
     except Exception as e:
 	    return str(e)
 
-@api.route('/urls/', methods=['POST'])
+@api.route('/urls/', methods=['POST','GET'])
 def write_url():
+    if flask.request.method = 'GET':
+        sql.dump('listingsCrawlMilwaukee','mke')
+        return send_file('mke.csv')
+
     # is there a better way to do this than nested json.loads()?
     url = json.loads(json.loads(request.data)['Message'])["messageBody"]
 
