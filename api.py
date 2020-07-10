@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request
+from flask import Flask, render_template, request
 # custom
 import craigslist, sql, util
 
