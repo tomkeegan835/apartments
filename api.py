@@ -20,7 +20,7 @@ def hello():
 def write_url():
     if request.method == 'GET':
         sql.dump('listingsCrawlMilwaukee','mke')
-        return send_file('mke.csv')
+        return send_file('mke.csv', as_attachment=True)
 
     # is there a better way to do this than nested json.loads()?
     url = json.loads(json.loads(request.data)['Message'])["messageBody"]
