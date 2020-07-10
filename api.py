@@ -18,7 +18,7 @@ def hello():
 
 @api.route('/urls/', methods=['POST','GET'])
 def write_url():
-    if flask.request.method = 'GET':
+    if flask.request.method == 'GET':
         sql.dump('listingsCrawlMilwaukee','mke')
         return send_file('mke.csv')
 
