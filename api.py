@@ -1,5 +1,4 @@
-import json
-from flask import Flask, request, send_from_directory
+import flask, json
 # custom
 import craigslist, sql, util
 
