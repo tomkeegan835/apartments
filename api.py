@@ -1,9 +1,10 @@
-import flask, json
+import json
+from flask import Flask, request, send_from_directory
 # custom
 import craigslist, sql, util
 
 # create the flask api
-api = flask(__name__)
+api = Flask(__name__)
 
 # create the urls table
 sql.craigslist_create('listingsApi')
@@ -17,7 +18,7 @@ def hello():
 
 @api.route('/urls/', methods=['POST','GET'])
 def write_url():
-    if flask.request.method == 'GET':
+    if request.method == 'GET':
         sql.dump('listingsCrawlMilwaukee','mke')
         return send_file('mke.csv')
 
