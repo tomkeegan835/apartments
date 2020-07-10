@@ -12,9 +12,9 @@ sql.craigslist_create('listingsApi')
 @api.route('/', methods=['GET'])
 def hello():
     try:
-		return send_from_directory('download.html')
-	except Exception as e:
-		return str(e)
+        return send_from_directory('download.html')
+    except Exception as e:
+	    return str(e)
 
 @api.route('/urls/', methods=['POST'])
 def write_url():
@@ -28,4 +28,4 @@ def write_url():
     return "processed SMS with listing link"
 
 if __name__ == '__main__':
-     api.run(host="0.0.0.0", port=80, debug=True)
+    api.run(host="0.0.0.0", port=80, debug=True)
