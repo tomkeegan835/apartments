@@ -1,5 +1,5 @@
 import json
-from flask import Flask, render_template, request
+from flask import Flask, request
 # custom
 import craigslist, sql, util
 
@@ -12,7 +12,7 @@ sql.craigslist_create('listingsApi')
 @api.route('/', methods=['GET'])
 def hello():
     try:
-		return render_template('download.html')
+		return send_from_directory('download.html')
 	except Exception as e:
 		return str(e)
 
