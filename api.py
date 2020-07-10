@@ -12,7 +12,7 @@ sql.craigslist_create('listingsApi')
 @api.route('/', methods=['GET'])
 def hello():
     try:
-        return send_from_directory(website,'download.html')
+        return send_from_directory('website','download.html')
     except Exception as e:
 	    return str(e)
 
