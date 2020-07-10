@@ -3,7 +3,7 @@ import flask, json
 import craigslist, sql, util
 
 # create the flask api
-api = Flask(__name__)
+api = flask(__name__)
 
 # create the urls table
 sql.craigslist_create('listingsApi')
