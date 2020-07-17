@@ -13,12 +13,12 @@ def hello():
 	    return str(e)
 
 @api.route('/milwaukee/', methods=['GET'])
-def download():
+def download_mke():
     sql.dump('listingsCrawlMilwaukee','mke')
     return send_file('mke.csv', as_attachment=True)
 
 @api.route('/sf/', methods=['GET'])
-def download():
+def download_sf():
     sql.dump('listingsCrawlSanFrancisco','sf')
     return send_file('sf.csv', as_attachment=True)
 
