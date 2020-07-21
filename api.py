@@ -22,5 +22,10 @@ def download_sf():
     sql.dump('listingsCrawlSanFrancisco','sf')
     return send_file('sf.csv', as_attachment=True)
 
+@api.route('/chicago/', methods=['GET'])
+def download_sf():
+    sql.dump('listingsCrawlChicago','chi')
+    return send_file('chi.csv', as_attachment=True)
+
 if __name__ == '__main__':
     api.run(host="0.0.0.0", port=80, debug=True)
