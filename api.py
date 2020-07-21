@@ -23,7 +23,7 @@ def download_sf():
     return send_file('sf.csv', as_attachment=True)
 
 @api.route('/chicago/', methods=['GET'])
-def download_sf():
+def download_chi():
     sql.dump('listingsCrawlChicago','chi')
     return send_file('chi.csv', as_attachment=True)
 
