@@ -1,8 +1,9 @@
 # apartments
 searching for apartments
 
-api.py: basic Flask api for sqlite3 database\
-craiglist.py: craiglist scraper which returns a dictionary with the following structure:
+api.py: basic Flask api for sqlite3 database, allows for CSV download\
+website/download.html: the page with the download links\
+craiglist.py: craiglist scraper which returns a python dictionary with the following structure:
 ```
 {
     'url': string url
@@ -20,9 +21,10 @@ craiglist.py: craiglist scraper which returns a dictionary with the following st
     'postDatetime': iso string
 }
 ```
-crawl.py: pulls in craigslist listing URLs\
+sf.py: pulls in craigslist listing URLs for SF\
+milwaukee.py: pulls in craigslist listing URLs for Milwaukee\
+chicago.py: pulls in craigslist listing URLs for Chicago\
 crawler.py: contains functions used by crawl.py\
-deploy.sh: packages and sftps files to ec2\
 requirements.txt: list of pip packages needed\
 sql.py: sqlite access helper functions\
 util.py: some utility functions used throughout the codebase
