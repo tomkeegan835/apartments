@@ -35,7 +35,7 @@ def get_price(page):
     price = 0
     priceTag = page.find('span', {'class': 'price'})
     if priceTag != None:
-        price = int(priceTag.string[1:])
+        price = int(priceTag.string[1:].replace(',', ''))
     return price
 
 def get_attributes(page):
