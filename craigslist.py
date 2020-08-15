@@ -28,7 +28,7 @@ def get_postid(page):
     if postingInfoTag != None:
         postidTag = postingInfoTag.p
         if postidTag != None:
-            postid = int(postidTag.string[9:])
+            postid = int(postidTag.string[9:].replace(',', ''))
     return postid
 
 def get_price(page):
